@@ -1,0 +1,5 @@
+useDynLib(SA23204180, .registration=TRUE)
+importFrom(Rcpp, evalCpp)
+exportPattern("^[[:alpha:]]+")
+importFrom("stats", "rgamma", "rnorm")
+importFrom("stats", "rbeta", "rbinom")
