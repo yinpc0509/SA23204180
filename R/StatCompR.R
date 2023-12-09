@@ -39,15 +39,15 @@ NULL
 #' @useDynLib StatComp
 NULL
 
-
-library(DAAG)
-library(boot)
-library(bootstrap)
-library(coda)
-library(dplyr)
-library(ggplot2)
-library(kableExtra)
-library(microbenchmark)
+#' @import DAAG
+#' @import boot
+#' @import bootstrap
+#' @import coda
+#' @import dplyr
+#' @import ggplot2
+#' @import kableExtra
+#' @import microbenchmark
+NULL
 
 #' @title Use three inputs to predict response using R.
 #' @description The prediction model is described in http://www.babelgraph.org/wp/?p=358.
