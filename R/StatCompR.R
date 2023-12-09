@@ -1,44 +1,3 @@
-#' @importFrom microbenchmark microbenchmark
-#' @title A illustration dataset
-#' @name data
-#' @description A dataset used to illustrate the performance of \code{vaccR} and \code{vaccC}.
-#' @examples
-#' \dontrun{
-#' data(data)
-#' attach(data)
-#' tm <- microbenchmark::microbenchmark(
-#'   vR = vaccR(age,female,ily),
-#'   vC = vaccC(age,female,ily)
-#' )
-#' print(summary(tm)[,c(1,3,5,6)])
-#' }
-NULL
-
-#' @title Benchmark R and Rcpp functions.
-#' @name benchmarks
-#' @description Use R package \code{microbenchmark} to compare the performance of C functions (\code{gibbsR} and \code{vaccR}) and Cpp functions (\code{gibbsC} and \code{vaccC}).
-#' @examples
-#' \dontrun{
-#' data(data)
-#' attach(data)
-#' tm1 <- microbenchmark::microbenchmark(
-#'   rnR = gibbsR(100,10),
-#'   rnC = gibbsC(100,10)
-#' )
-#' print(summary(tm1)[,c(1,3,5,6)])
-#' 
-#' tm2 <- microbenchmark::microbenchmark(
-#'   vR = vaccR(age,female,ily),
-#'   vC = vaccC(age,female,ily)
-#' )
-#' print(summary(tm2)[,c(1,3,5,6)])
-#' }
-#' @import microbenchmark
-#' @importFrom Rcpp evalCpp
-#' @importFrom stats rnorm rgamma
-#' @useDynLib StatComp
-NULL
-
 #' @import DAAG
 #' @import boot
 #' @import bootstrap
@@ -49,52 +8,101 @@ NULL
 #' @import microbenchmark
 NULL
 
-#' @title Use three inputs to predict response using R.
-#' @description The prediction model is described in http://www.babelgraph.org/wp/?p=358.
+#' @importFrom microbenchmark microbenchmark
+#' @title An Illustration Dataset
+#' @name illustration_data
+#' @description A dataset used to illustrate the performance of \code{vaccR} and \code{vaccC}.
+#' @examples
+#' \dontrun{
+#' data(illustration_data)
+#' attach(illustration_data)
+#' tm <- microbenchmark::microbenchmark(
+#'   vR = predictResponse(age, female, ily),
+#'   vC = predictResponseCpp(age, female, ily)
+#' )
+#' print(summary(tm)[, c(1, 3, 5, 6)])
+#' }
+NULL
+
+#' @title Benchmark R and Rcpp Functions.
+#' @name benchmarks
+#' @description Use R package \code{microbenchmark} to compare the performance of C functions (\code{gibbsR} and \code{predictResponse}) and Cpp functions (\code{gibbsC} and \code{predictResponseCpp}).
+#' @examples
+#' \dontrun{
+#' data(illustration_data)
+#' attach(illustration_data)
+#' tm1 <- microbenchmark::microbenchmark(
+#'   rnR = gibbsR(100, 10),
+#'   rnC = gibbsC(100, 10)
+#' )
+#' print(summary(tm1)[, c(1, 3, 5, 6)])
+#' 
+#' tm2 <- microbenchmark::microbenchmark(
+#'   vR = predictResponse(age, female, ily),
+#'   vC = predictResponseCpp(age, female, ily)
+#' )
+#' print(summary(tm2)[, c(1, 3, 5, 6)])
+#' }
+#' @import microbenchmark
+#' @importFrom Rcpp evalCpp
+#' @importFrom stats rnorm rgamma
+#' @useDynLib StatComp
+NULL
+
+
+
+
+#' @title Predict Response Using Three Inputs in R
+#' @description This function predicts a response using three input variables.
+#'   The prediction model is described in http://www.babelgraph.org/wp/?p=358.
 #' @param age the first predictor (numeric)
-#' @param female the second predictor (logical)
-#' @param ily the third predictor (logical)
+#' @param is_female the second predictor (logical)
+#' @param has_ily the third predictor (logical)
 #' @return a random sample of size \code{n}
 #' @examples
 #' \dontrun{
 #' data(data)
 #' attach(data)
-#' res <- vaccR(age,female,ily)
+#' prediction <- predictResponse(age, is_female, has_ily)
 #' }
 #' @export
-vaccR <- function(age, female, ily) {
-  p <- 0.25 + 0.3 * 1 / (1 - exp(0.04 * age)) + 0.1 * ily
-  p <- p * ifelse(female, 1.25, 0.75)
-  p <- pmax(0, p)
-  p <- pmin(1, p)
-  p
+predictResponse <- function(age, is_female, has_ily) {
+  probability <- 0.25 + 0.3 * 1 / (1 - exp(0.04 * age)) + 0.1 * has_ily
+  probability <- probability * ifelse(is_female, 1.25, 0.75)
+  probability <- pmax(0, probability)
+  probability <- pmin(1, probability)
+  probability
 }
 
-#' @title A Gibbs sampler using R
-#' @description A Gibbs sampler using R
-#' @param N the number of samples
-#' @param thin the number of between-sample random numbers
-#' @return a random sample of size \code{n}
+
+#' @title A Custom Gibbs Sampler using R
+#' @description A custom implementation of Gibbs sampler using R
+#' @param num_samples the number of samples to generate
+#' @param thinning_factor the number of between-sample random numbers
+#' @return a random sample matrix of size \code{num_samples}
 #' @examples
 #' \dontrun{
-#' rnR <- gibbsR(100,10)
-#' par(mfrow=c(2,1));
-#' plot(rnR[,1],type='l')
-#' plot(rnR[,2],type='l')
+#' custom_samples <- customGibbsR(100, 10)
+#' par(mfrow=c(2,1))
+#' plot(custom_samples[, 1], type='l', main='Sampled Values for X')
+#' plot(custom_samples[, 2], type='l', main='Sampled Values for Y')
 #' }
 #' @export
-gibbsR <- function(N, thin) {
-  mat <- matrix(nrow = N, ncol = 2)
+customGibbsR <- function(num_samples, thinning_factor) {
+  sample_matrix <- matrix(nrow = num_samples, ncol = 2)
   x <- y <- 0
-  for (i in 1:N) {
-    for (j in 1:thin) {
+  
+  for (i in 1:num_samples) {
+    for (j in 1:thinning_factor) {
       x <- rgamma(1, 3, y * y + 4)
       y <- rnorm(1, 1 / (x + 1), 1 / sqrt(2 * (x + 1)))
     }
-    mat[i, ] <- c(x, y)
+    sample_matrix[i, ] <- c(x, y)
   }
-  mat
+  
+  sample_matrix
 }
+
 
 #' Convex Relaxation Function
 #'

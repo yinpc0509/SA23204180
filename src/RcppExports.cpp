@@ -10,6 +10,20 @@ Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
 Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
+// gibbsSampler
+NumericMatrix gibbsSampler(int num_samples, int n, double a, double b);
+RcppExport SEXP _SA23204180_gibbsSampler(SEXP num_samplesSEXP, SEXP nSEXP, SEXP aSEXP, SEXP bSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type num_samples(num_samplesSEXP);
+    Rcpp::traits::input_parameter< int >::type n(nSEXP);
+    Rcpp::traits::input_parameter< double >::type a(aSEXP);
+    Rcpp::traits::input_parameter< double >::type b(bSEXP);
+    rcpp_result_gen = Rcpp::wrap(gibbsSampler(num_samples, n, a, b));
+    return rcpp_result_gen;
+END_RCPP
+}
 // gibbsC
 NumericMatrix gibbsC(int N, int thin);
 RcppExport SEXP _SA23204180_gibbsC(SEXP NSEXP, SEXP thinSEXP) {
@@ -37,6 +51,7 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
+    {"_SA23204180_gibbsSampler", (DL_FUNC) &_SA23204180_gibbsSampler, 4},
     {"_SA23204180_gibbsC", (DL_FUNC) &_SA23204180_gibbsC, 2},
     {"_SA23204180_vaccC", (DL_FUNC) &_SA23204180_vaccC, 3},
     {NULL, NULL, 0}

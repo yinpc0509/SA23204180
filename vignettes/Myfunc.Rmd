@@ -4,7 +4,7 @@ author: "SA23204180 Yin Pengcheng"
 date: "2023-12-04"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Homework}
+  %\VignetteIndexEntry{Myfunc}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -136,3 +136,4 @@ theta_result_logistic <- logistic_policy(features_mat, rewards_mat)
 print("Theta Result (theta_result_logistic):")
 print(theta_result_logistic)
 ```
+
